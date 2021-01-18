@@ -1,0 +1,12 @@
+{% load bootstrap4 %}
+ <!-- Side Widget -->
+    <div class="card my-4">
+        <h5 class="card-header">Фильтр</h5>
+        <div class="card-body">
+            <form method="get">
+                {% bootstrap_form filter.form %}
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+
+        </div>
+    </div>

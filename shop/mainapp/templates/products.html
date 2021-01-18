@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="ml-4 mr-4">
+  <div class="row">
+      <div class="col-md-2">
+      {% include 'include/left_sidebar.html' %}
+      {% include 'include/right_sidebar.html' %}
+      </div>
+
+<div class="col-lg-9 mt-4 ml-4">
+<div class="row">
+
+{% for product in filter.qs %}
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card h-100">
+              <div class="img-container">
+                <a href="{{ product.get_absolute_url }}">
+                  <img class="img-style" src="{{  product.image.url  }}">
+                </a>
+              </div>
+                <div class="card-body">
+                  <br>
+                <h6 class="card-title">
+                  <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
+                </h6>
+              </div>
+              <div class="card-footer">
+                <p>{{ product.price }} UAH  <span class="badge rounded-pill bg-success text-white">{{ product.state.name }}</span></p>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalLong">
+                  Связаться с нами
+                </button>
+
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mt-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'base' %}">Главная</a></li>
+    <li class="breadcrumb-item active">{{ category.name }}</li>
+  </ol>
+</nav>
+<div class="mt-4 ml-4">
+
+
+<div class="row">
+{% for product in category_products %}
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card h-100">
+              <div class="img-container">
+                <a href="{{ product.get_absolute_url }}"><img class="img-style" src="{{  product.image.url  }}"></a>
+              </div>
+                <div class="card-body">
+                  <br>
+                <h6 class="card-title">
+                  <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
+                </h6>
+              </div>
+              <div class="card-footer">
+                <p>{{ product.price }} UAH</p>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalLong">
+                  Связаться с нами
+                </button>
+
+              </div>
+            </div>
+          </div>
+{% endfor %}
+</div>
+</div>
+{% endblock content %}
