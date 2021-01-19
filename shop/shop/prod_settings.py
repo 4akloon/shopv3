@@ -7,7 +7,7 @@ SECRET_KEY = '=)r3242v23_1%4++(%et8j(b)ksdufis6v8$h$is_^hne88v-)k0%a-!!*$!ywgr'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.2', '192.168.0.3', 'app-store.ks.ua', '0.0.0.0', '185.253.218.184', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.0.4', '192.168.0.3', 'app-store.ks.ua', '0.0.0.0', '185.253.218.184', '127.0.0.1']
 
 DATABASES = {
     'default': {
