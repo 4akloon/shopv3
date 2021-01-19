@@ -15,7 +15,7 @@ DATABASES = {
         'NAME': 'store',
         'USER': 'appstoredb',
         'PASSWORD': 'appstore228',
-        'HOST': 'local',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
