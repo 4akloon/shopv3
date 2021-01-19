@@ -13,12 +13,8 @@ isort==5.7.0
 lazy-object-proxy==1.4.3
 llvmlite==0.35.0
 mccabe==0.6.1
-numba==0.52.0
-numpy==1.19.4
-opencv-python==4.4.0.46
 Pillow==8.0.1
 psycopg2-binary==2.8.6
-pygame==2.0.0
 pylint==2.6.0
 pytz==2020.1
 six==1.15.0
