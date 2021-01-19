@@ -12,7 +12,7 @@ ALLOWED_HOSTS = ['192.168.0.2', '192.168.0.3', 'app-store.ks.ua', '0.0.0.0', '18
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'store',
+        'NAME': 'shop',
         'USER': 'appstoredb',
         'PASSWORD': 'appstore228',
         'HOST': 'localhost',
