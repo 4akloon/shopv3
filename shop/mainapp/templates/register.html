@@ -1,29 +1,28 @@
-{% extends '../base.html' %}
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
 {% block content %}
-    <form method="post" class="form-group">
-        {{form}}
 
-  <div class="text-center mb-4">
-    <img class="mb-4" src="/docs/4.3/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
-    <h1 class="h3 mb-3 font-weight-normal">Floating labels</h1>
-    <p>Build form controls with floating labels via the <code>:placeholder-shown</code> pseudo-element. <a href="https://caniuse.com/#feat=css-placeholder-shown">Works in latest Chrome, Safari, and Firefox.</a></p>
-  </div>
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-5">
+        <div class="card shadow-lg border-0 rounded-lg mt-5">
+            <div class="card-header">
+                <h3 class="text-center font-weight-light my-4">Реєстрація</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                  {% csrf_token %}
+                  {{ form|crispy }}
+                    <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Зареєструватися</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <div class="small"><a href="/login/">Немає облікового запису? Увійти!</a></div>
+            </div>
+        </div>
+    </div>
+</div>
 
-  <div class="form-label-group">
-    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-    <label for="inputEmail">Email address</label>
-  </div>
-
-  <div class="form-label-group">
-    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-    <label for="inputPassword">Password</label>
-  </div>
-
-  <div class="checkbox mb-3">
-    <label>
-      <input type="checkbox" value="remember-me"> Remember me
-    </label>
-  </div>
-  <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
-</form>
 {% endblock content %}

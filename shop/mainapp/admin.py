@@ -3,12 +3,9 @@ from django.utils.safestring import mark_safe
 from django import forms
 
 from .models import *
-from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 
 class ProductAdminForm(forms.ModelForm):
-    description = forms.CharField(label='Описание', widget=CKEditorUploadingWidget())
-
     class Meta:
         model = Product
         fields = '__all__'
@@ -55,9 +52,47 @@ class StateAdmin(admin.ModelAdmin):
 
 @admin.register(Reviews)
 class ReviewsAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'parent', 'product', 'date')
-    search_fields = ('name', 'email', 'date', 'text', 'parent__name')
-    readonly_fields = ('name', 'email')
+    list_display = ('customer', 'parent', 'product', 'date')
+    search_fields = ('customer', 'product', 'date', 'text', 'parent__name')
+    # readonly_fields = ('customer', 'product')
+
+
+class CartProductAdminInline(admin.TabularInline):
+    model = CartProduct
+    extra = 0
+
+
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    inlines = [CartProductAdminInline]
+    list_display = ('customer', 'status',)
+
+
+
+@admin.register(CartStatus)
+class CartStatusAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name',)
+
+
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ('customer', 'product', 'date')
+
+@admin.register(OrderStatus)
+class OrderStatusAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name',)
+
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('cart', 'status', 'paid', 'final_price', 'created_at')
+
 
 
 admin.site.site_title = 'AppStore'

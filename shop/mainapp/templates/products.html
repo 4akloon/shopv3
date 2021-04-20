@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 
+{% block title %}
+{{ category.name }}
+{% endblock title %}
 
 {% block content %}
 
@@ -9,11 +12,10 @@
       {% include 'include/left_sidebar.html' %}
       {% include 'include/right_sidebar.html' %}
       </div>
+      <div class="col-lg-9 mt-4 ml-4">
+        <div class="row">
 
-<div class="col-lg-9 mt-4 ml-4">
-<div class="row">
-
-{% for product in filter.qs %}
+          {% for product in filter.qs %}
           <div class="col-lg-3 col-md-6 mb-4">
             <div class="card h-100">
               <div class="img-container">
@@ -28,18 +30,16 @@
                 </h6>
               </div>
               <div class="card-footer">
-                <p>{{ product.price }} UAH  <span class="badge rounded-pill bg-success text-white">{{ product.state.name }}</span></p>
-                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalLong">
-                  Связаться с нами
-                </button>
+                <p>{{ product.price }} грн  <span class="badge rounded-pill bg-success text-white">{{ product.state.name }}</span></p>
+                <a href="{% if user.is_authenticated %}{% url 'add_to_cart' id=product.id %}{% else %}/login/{% endif %}"><button class="btn btn-danger">Додати в кошик</button></a>
 
               </div>
             </div>
           </div>
         {% endfor %}
+        
       </div>
     </div>
-
   </div>
 </div>
 
