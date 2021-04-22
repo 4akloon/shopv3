@@ -100,7 +100,7 @@ class CartStatus(models.Model):
 class Customer(models.Model):
 
     user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
-    favorites = models.ManyToManyField(Product, verbose_name='Избранное', blank=True)
+    favorites = models.ManyToManyField(Product, verbose_name='Избранное', blank=True, through='Favorite')
     address = models.CharField(verbose_name='Адресс', max_length=150, blank=True, null=True)
     number = models.CharField('Номер телефона', max_length=14, blank=True, null=True)
 
