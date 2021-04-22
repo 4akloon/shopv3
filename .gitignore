@@ -3,3 +3,4 @@
 /media
 /.idea
 /shop/shop/local_settings.py
+/shop/shop/static/admin
