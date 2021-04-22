@@ -30,9 +30,6 @@ urlpatterns = [
     path('api/auth/', include('djoser.urls')),
     path('api/auth/', include('djoser.urls.authtoken')),
 ]
-
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
 # if settings.MEDIA_ROOT == os.path.join('/Users/evgenij/Documents/Dev/PycharmProjects/pythonProject/media'):
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
