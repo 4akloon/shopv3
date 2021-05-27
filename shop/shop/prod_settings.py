@@ -3,9 +3,10 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['192.168.0.4', '192.168.0.3', 'app-store.ks.ua', '0.0.0.0', '185.253.218.184', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.0.4', '192.168.0.3',
+                 'app-store.ks.ua', '0.0.0.0', '185.253.218.184', '127.0.0.1']
 
 DATABASES = {
     'default': {
@@ -26,4 +27,3 @@ STATICFILES_DIRS = (os.path.join('/home/www/shop/shop/static'),)
 MEDIA_ROOT = os.path.join('/home/www/shop/media')
 
 CSRF_TRUSTED_ORIGINS = ['app-store.ks.ua']
-

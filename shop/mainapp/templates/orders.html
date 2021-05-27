@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>{{ message }}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            <div class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
+                <h3 class="text-center mt-5 mb-5">Замовлення ({{ order_list.count }})</h3>
+                {% for order in order_list %}
+                <div class="mt-4">
+                    <h5>
+                        Замовлення ({{ order.created_at }})
+                        {% if order.status.id == 4 %}
+                        <span class="badge badge-danger">
+                            {{ order.status }}
+                        </span>
+                        {% elif order.status.id == 3 %}
+                        <span class="badge badge-success">
+                            {{ order.status }}
+                        </span>
+                        {% else %}
+                        <span class="badge badge-primary">
+                            {{ order.status }}
+                        </span>
+                        {% endif %}
+                    </h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    <p style="width: 150px">Товар</p>
+                                </th>
+                                <th scope="col">
+                                    <p style="width: 80px">Ціна</p>
+                                </th>
+                                <th scope="col">
+                                    <p style="width: 40px">Кількість</p>
+                                </th>
+                                <th scope="col">
+                                    <p style="width: 120px">Загальна ціна</p>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.cart.cartproduct_set.all %}
+                            <tr>
+                                <td>
+                                    <a href="{{ item.product.get_absolute_url }}">
+                                        {{ item.product.title }}
+                                    </a>
+                                </td>
+                                <td>{{ item.product.price }} грн</td>
+                                <td>
+                                    {{ item.count }}
+                                </td>
+                                <td>{{ item.get_price }} грн</td>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                                <td></td>
+                                <td><strong>Всього:</strong></td>
+                                <td><strong>{{ order.cart.cartproduct_set.all.count }}</strong></td>
+                                <td><strong>{{ order.final_price }} грн</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p><strong>Адреса: </strong>{{ order.address }}</p>
+                    <p><strong>Коментар: </strong>{{ order.comment }}</p>
+                    {% if order.status.id == 1 %}
+                    <a href="/orders/cancel/{{ order.id }}">
+                        <button class="btn btn-danger">Відмінити</button>
+                    </a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

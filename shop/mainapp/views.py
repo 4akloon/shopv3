@@ -5,14 +5,12 @@ from django.views.generic.base import View
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-
-
+from django.contrib import messages
 
 
 from .forms import *
 from .models import *
 from .filters import ProductFilter
-
 
 
 class BaseView(View):
@@ -29,7 +27,8 @@ class ProductsView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['filter'] = ProductFilter(self.request.GET, queryset=self.get_queryset())
+        context['filter'] = ProductFilter(
+            self.request.GET, queryset=self.get_queryset())
         return context
 
 
@@ -42,7 +41,8 @@ class CategoryView(ListView):
         category = Category.objects.get(url=slug)
         context['category'] = category
         context['product_list'] = Product.objects.filter(category=category)
-        context['filter'] = ProductFilter(self.request.GET, queryset=context['product_list'])
+        context['filter'] = ProductFilter(
+            self.request.GET, queryset=context['product_list'])
         return render(request, 'products.html', context)
 
 
@@ -97,7 +97,7 @@ class FavoritesView(ListView):
     def get(self, request):
         customer = Customer.objects.get(user=request.user)
         context = {}
-        context['product_list'] = customer.favorite_set.all()
+        context['product_list'] = customer.favorite_set.all().order_by('-id')
         return render(request, 'favorites.html', context)
 
 
@@ -107,6 +107,7 @@ class CartView(View):
         customer = Customer.objects.get(user=request.user)
         context = {}
         context['cart'] = customer.cart_set.get(status=1)
+        context['form'] = CreateOrderForm()
         return render(request, 'cart.html', context)
 
 
@@ -115,7 +116,8 @@ def register(request):
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
-            user = authenticate(request=request, username=form.cleaned_data.get("username"), password=form.clean_password2())
+            user = authenticate(request=request, username=form.cleaned_data.get(
+                "username"), password=form.clean_password2())
             login(request, user)
             customer = Customer(user=user)
             customer.save()
@@ -147,8 +149,10 @@ class AddToCartView(View):
         product = Product.objects.get(id=id)
         customer = Customer.objects.get(user=request.user)
         cart = customer.cart_set.get(status=1)
-        cart_product, created = CartProduct.objects.get_or_create(parent=cart, product=product)
+        cart_product, created = CartProduct.objects.get_or_create(
+            parent=cart, product=product)
         return redirect('/cart')
+
 
 class DeleteFromCartView(View):
 
@@ -156,6 +160,7 @@ class DeleteFromCartView(View):
         cart_product = CartProduct.objects.get(id=id)
         cart_product.delete()
         return redirect('/cart')
+
 
 class ChangeCountView(View):
 
@@ -170,6 +175,51 @@ class ChangeCountView(View):
         return redirect('/cart')
 
 
-
 # def error_404_view(request, exeption):
 #     return render('404.html')
+
+class AddOrder(View):
+    def post(self, request):
+        print('addorder')
+        customer = Customer.objects.get(user=request.user)
+        cart = customer.cart_set.get(status=1)
+        final_price = 0
+        print(list(cart.cartproduct_set.all()))
+        if list(cart.cartproduct_set.all()) == []:
+            return redirect('/')
+        for prod in list(cart.cartproduct_set.all()):
+            final_price = final_price + (prod.product.price * prod.count)
+        Order.objects.create(address=request.POST.get("address"), final_price=final_price,
+                             comment=request.POST.get("comment"), cart=cart, customer=customer).save()
+        cart.status = CartStatus.objects.get(id=2)
+        cart.save()
+        print('ok')
+        Cart(customer=customer).save()
+        messages.add_message(request, messages.INFO, 'Успішно замовлено!')
+        return redirect('/orders')
+
+
+class OrdersView(ListView):
+    model = Order
+    template_name = 'orders.html'
+
+    def get(self, request):
+        customer = Customer.objects.get(user=request.user)
+        context = {}
+        context['order_list'] = customer.order_set.all().order_by('-id')
+        return render(request, 'orders.html', context)
+
+
+class CancelOrder(View):
+
+    def get(self, request, id):
+        customer = Customer.objects.get(user=request.user)
+        order = Order.objects.get(id=id)
+        if order.customer != customer or order.status.id != 1:
+            messages.add_message(request, messages.INFO, 'Помилка.')
+            return redirect('/orders')
+        print(order.status.id)
+        order.status = OrderStatus.objects.get(id=4)
+        order.save()
+        messages.add_message(request, messages.INFO, 'Замовлення відмінено.')
+        return redirect('/orders')

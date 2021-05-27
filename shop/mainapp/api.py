@@ -13,7 +13,7 @@ class CategoryAPIView(APIView):
     def get(self, request):
 
         categories = Category.objects.all()
-        serializer = CategorySerializer(categories, many=True )
+        serializer = CategorySerializer(categories, many=True)
         return Response(serializer.data)
 
 
@@ -50,6 +50,7 @@ class ProductsAPIView(APIView):
         except Exception:
             return Response(status=404)
 
+
 class FavoritesAPIView(APIView):
     permission_classes = [
         permissions.IsAuthenticated
@@ -64,6 +65,7 @@ class FavoritesAPIView(APIView):
         except Exception:
             return Response(status=404)
 
+
 class CartProductsAPIView(APIView):
     permission_classes = [
         permissions.IsAuthenticated
@@ -72,9 +74,10 @@ class CartProductsAPIView(APIView):
     def get(self, request):
         customer = Customer.objects.get(user=request.user)
         cart = customer.cart_set.get(status=1)
-        cartproducts = cart.cartproduct_set.all()
+        cartproducts = cart.cartproduct_set.all().order_by('-id')
         serializer = CartProductSerializer(cartproducts, many=True)
         return Response(serializer.data)
+
 
 class CartProductAPIView(APIView):
     permission_classes = [
@@ -92,17 +95,16 @@ class CartProductAPIView(APIView):
             return Response(status=200)
         return Response(status=404)
 
-
     def post(self, request, id):
         try:
             product = Product.objects.get(id=id)
             customer = Customer.objects.get(user=request.user)
             cart = customer.cart_set.get(status=1)
-            cart_product, created = CartProduct.objects.get_or_create(parent=cart, product=product)
+            cart_product, created = CartProduct.objects.get_or_create(
+                parent=cart, product=product)
             return Response(status=200)
         except Exception:
             return Response(status=404)
-
 
     def delete(self, request, id):
         try:
@@ -111,6 +113,7 @@ class CartProductAPIView(APIView):
             return Response(status=200)
         except Exception:
             return Response(status=404)
+
 
 class LikeAPIView(APIView):
     permission_classes = [
@@ -141,11 +144,13 @@ class LikeAPIView(APIView):
         try:
             product = Product.objects.get(id=id)
             customer = Customer.objects.get(user=request.user)
-            ob = Favorite.objects.filter(product=product, customer=customer).order_by('-id')
+            ob = Favorite.objects.filter(
+                product=product, customer=customer).order_by('-id')
             ob.delete()
             return Response(status=200)
         except Exception:
             return Response(status=404)
+
 
 class ProductImagesAPIView(APIView):
 
@@ -155,13 +160,16 @@ class ProductImagesAPIView(APIView):
         serializer = ProductImageSerializer(images, many=True)
         return Response(serializer.data)
 
+
 class ProductReviewsAPIView(APIView):
 
     def get(self, request, id):
         product = Product.objects.get(id=id)
-        reviews = product.reviews_set.filter(parent__isnull=True).order_by('-date')
+        reviews = product.reviews_set.filter(
+            parent__isnull=True).order_by('-date')
         serializer = ReviewsSerializer(reviews, many=True)
         return Response(serializer.data)
+
 
 class ReplyReviewsAPIView(APIView):
 
@@ -170,6 +178,7 @@ class ReplyReviewsAPIView(APIView):
         reviews = review.reviews_set.all().order_by('-date')
         serializer = ReviewsSerializer(reviews, many=True)
         return Response(serializer.data)
+
 
 class ReviewsAPIView(APIView):
     permission_classes = [
@@ -189,8 +198,65 @@ class ReviewsAPIView(APIView):
         text = request.data['text']
         if request.data['parent']:
             parent = Reviews.objects.get(id=request.data['parent'])
-        else: 
+        else:
             parent = None
-        Reviews.objects.create(customer=customer, product=product, parent=parent, text=text, bought=bought).save()
+        Reviews.objects.create(customer=customer, product=product,
+                               parent=parent, text=text, bought=bought).save()
         print(request.data)
         return Response(status=200)
+
+
+class OrdersAPIView(APIView):
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get(self, request):
+        customer = Customer.objects.get(user=request.user)
+        orders = customer.order_set.all().order_by('-id')
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        customer = Customer.objects.get(user=request.user)
+        cart = customer.cart_set.get(status=1)
+        final_price = 0
+        print(list(cart.cartproduct_set.all()))
+        if list(cart.cartproduct_set.all()) == []:
+            return Response(status=400)
+        for prod in list(cart.cartproduct_set.all()):
+            final_price = final_price + (prod.product.price * prod.count)
+        Order.objects.create(address=request.data['address'], final_price=final_price,
+                             comment=request.data['comment'], cart=cart, customer=customer).save()
+        cart.status = CartStatus.objects.get(id=2)
+        cart.save()
+        print('ok')
+        Cart(customer=customer).save()
+        return Response(status=200)
+
+
+class OrderAPIView(APIView):
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def delete(self, request, id):
+        customer = Customer.objects.get(user=request.user)
+        order = Order.objects.get(id=id)
+        if order.customer != customer:
+            return Response(status=404)
+        order.status = OrderStatus.objects.get(id=4)
+        order.save()
+        return Response(status=200)
+
+
+class CartApiView(APIView):
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get(self, request, id):
+        cart = Cart.objects.get(id=id)
+        cart_products = cart.cartproduct_set.all()
+        serializer = CartProductSerializer(cart_products, many=True)
+        return Response(serializer.data)

@@ -7,6 +7,7 @@ from .models import *
 
 class ReviewForm(forms.ModelForm):
     text = forms.CharField()
+
     class Meta:
         model = Reviews
         fields = ('text',)
@@ -26,6 +27,8 @@ class CreateUserForm(UserCreationForm):
         field_classes = {'username': UsernameField}
 
 
+class CreateOrderForm(forms.ModelForm):
 
-
-
+    class Meta:
+        model = Order
+        fields = ('address', 'comment',)
