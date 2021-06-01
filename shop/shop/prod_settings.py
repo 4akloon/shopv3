@@ -11,7 +11,7 @@ ALLOWED_HOSTS = ['192.168.0.4', '192.168.0.3',
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'shop',
+        'NAME': 'shop2',
         'USER': 'appstoredb',
         'PASSWORD': 'appstore228',
         'HOST': 'localhost',
