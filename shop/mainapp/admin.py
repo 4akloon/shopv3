@@ -7,7 +7,7 @@ from .models import *
 
 
 class ProductAdminForm(forms.ModelForm):
-    description = forms.CharField(widget=CKEditorWidget())
+    # description = forms.CharField(widget=CKEditorWidget())
     class Meta:
         model = Product
         fields = '__all__'
@@ -70,7 +70,6 @@ class CartAdmin(admin.ModelAdmin):
     list_display = ('customer', 'status',)
 
 
-
 @admin.register(CartStatus)
 class CartStatusAdmin(admin.ModelAdmin):
     list_display = ('id', 'name',)
@@ -85,16 +84,15 @@ class CustomerAdmin(admin.ModelAdmin):
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ('customer', 'product', 'date')
 
+
 @admin.register(OrderStatus)
 class OrderStatusAdmin(admin.ModelAdmin):
     list_display = ('id', 'name',)
 
 
-
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('cart', 'status', 'paid', 'final_price', 'created_at')
-
 
 
 admin.site.site_title = 'AppStore'
