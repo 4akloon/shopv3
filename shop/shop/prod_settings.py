@@ -3,7 +3,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['192.168.0.4', '192.168.0.3',
                  'app-store.ks.ua', '0.0.0.0', '185.253.218.184', '127.0.0.1']
